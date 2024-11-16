@@ -13,28 +13,42 @@ clock = pygame.time.Clock()
 running = True
 pygame.display.set_caption("Simple Chess")
 
+#start the chess game
 game=ChessGame()
+white_to_move=True
+highlighted_squares=[]
 
-selected_square=(8,8)
+def refresh():
+	#draws the checkerd chess board to the screen highlighting the selected square
+	draw_chess_board(screen,highlighted_squares)
 
+	#draws the pieces on the screen
+	game.draw(screen)
+
+	#flip() the display to put your work on screen
+	pygame.display.flip()
+
+
+def handle_click(highlighted_squares=highlighted_squares):
+	square=tuple(np.flip(np.array(pygame.mouse.get_pos(),dtype=int)//SQUARE_SIZE).astype(int))
+	if square in highlighted_squares:
+		game.move(white_to_move,highlighted_squares[0],square)
+		highlighted_squares.clear()
+	else:
+		highlighted_squares.clear()
+		highlighted_squares += game.get_possible_moves(square,white_to_move)
+	return
+
+refresh()
 while running:
-	
 	# poll for events
 	# pygame.QUIT event means the user clicked X to close your window
 	for event in pygame.event.get():
 		if event.type == pygame.QUIT:
 			running = False
 		elif event.type == pygame.MOUSEBUTTONDOWN:
-			selected_square=np.array(pygame.mouse.get_pos())//SQUARE_SIZE
-
-	# fill the screen with a color to wipe away anything from last frame
-	draw_chess_board(screen,selected_square)
-
-	# RENDER YOUR GAME HERE
-	game.draw(screen)
-
-	# flip() the display to put your work on screen
-	pygame.display.flip()
+			handle_click()
+			refresh()
 
 	clock.tick(60)  # limits FPS to 60
 
