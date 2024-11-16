@@ -1,12 +1,16 @@
 # Example file showing a basic pygame "game loop"
 import pygame
-from graphics import *
+from board import *
+from pieces import *
+from logic import *
 # pygame setup
 pygame.init()
 screen = pygame.display.set_mode((BOARD_SIZE, BOARD_SIZE))
 clock = pygame.time.Clock()
 running = True
 pygame.display.set_caption("Simple Chess")
+
+game=ChessGame()
 
 while running:
 	
@@ -20,6 +24,7 @@ while running:
 	draw_chess_board(screen)
 
 	# RENDER YOUR GAME HERE
+	game.draw(screen)
 
 	# flip() the display to put your work on screen
 	pygame.display.flip()
