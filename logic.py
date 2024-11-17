@@ -8,6 +8,9 @@ class ChessGame:
 		#variable to keep track of checks, since you can only be in check if its your go we dont have to record who is in check
 		self.check=False
 
+		#variable to keep track of available en pasaunts since can only be one availabel at a time we dont need to record whos it was
+		self.pawn_in_movement=None
+
 		#a 2d array of the piece at each square in the board
 		self.piece_map=[
 			[-4,-3,-2,-5,-6,-2,-3,-4],
