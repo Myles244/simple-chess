@@ -27,22 +27,26 @@ class Pawn(ChessPiece):
 		self.first_move=True
 
 	def possible_moves(self,piece_map):
+
 		moves=[]
+
+		#white pieces move up ie in the negative one direction opposite is true for black pieces
+		direction=1-2*self.is_white
 
 		#move forward two if the space is empty and its my first move
 		if self.first_move:
-			if piece_map[self.position[0]-2][self.position[1]]==0:
-				moves+=[(self.position[0]-2,self.position[1])]
+			if piece_map[self.position[0]+2*direction][self.position[1]]==0:
+				moves+=[(self.position[0]+2*direction,self.position[1])]
 
 		#moveforward if the space is empty
-		if piece_map[self.position[0]-1][self.position[1]]==0:
-			moves+=[(self.position[0]-1,self.position[1])]
+		if piece_map[self.position[0]+direction][self.position[1]]==0:
+			moves+=[(self.position[0]+direction,self.position[1])]
 
-		#take diagonally if the space is full
-		if piece_map[self.position[0]-1][self.position[1]-1]<0:
-			moves+=[(self.position[0]-1,self.position[1]-1)]
-		if piece_map[self.position[0]-1][self.position[1]+1]<0:
-			moves+=[(self.position[0]-1,self.position[1]+1)]
+		#take diagonally if the space has a peice of the oposite colour for white peice opsoite colours are negative ie direction*peicemap>0 same is true for blacks
+		if direction*piece_map[self.position[0]+direction][self.position[1]-1]>0:
+			moves+=[(self.position[0]+direction,self.position[1]-1)]
+		if direction*piece_map[self.position[0]+direction][self.position[1]+1]>0:
+			moves+=[(self.position[0]+direction,self.position[1]+1)]
 		return moves
 	
 	def move_to(self, new_position):

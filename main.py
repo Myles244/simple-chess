@@ -30,10 +30,20 @@ def refresh():
 
 
 def handle_click(highlighted_squares=highlighted_squares):
+
+	#calculate which square the click was in
 	square=tuple(np.flip(np.array(pygame.mouse.get_pos(),dtype=int)//SQUARE_SIZE).astype(int))
+
+	global white_to_move
+
+	#if they clicked on a previosly highlighted square, if it wasnt the same one they clicked on last time they made a move
 	if square in highlighted_squares:
-		game.move(white_to_move,highlighted_squares[0],square)
-		highlighted_squares.clear()
+		if square != highlighted_squares[0]:
+			game.move(white_to_move,highlighted_squares[0],square)
+			highlighted_squares.clear()
+			white_to_move = not white_to_move
+
+	#if they clicked on an unhighlighted square, display the possible moves for that square
 	else:
 		highlighted_squares.clear()
 		highlighted_squares += game.get_possible_moves(square,white_to_move)

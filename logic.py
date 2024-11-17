@@ -92,6 +92,7 @@ class ChessGame:
 
 		#update piece map
 		self.piece_map[end_position[0]][end_position[1]]=self.piece_map[start_position[0]][start_position[1]]
+		self.piece_map[start_position[0]][start_position[1]]=0
 
 		#move the piece
 		if white_to_move:
