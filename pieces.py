@@ -17,7 +17,7 @@ class ChessPiece:
 	
 	def move_to(self,new_position):
 		self.position=new_position
-	
+
 
 class Pawn(ChessPiece):
 	def __init__(self,position,is_white):
@@ -53,8 +53,6 @@ class Pawn(ChessPiece):
 			if self.position[1]<=6:
 				if direction*piece_map[self.position[0]+direction][self.position[1]+1]>0  or (self.position[0]+direction==pawn_in_movement[0][0] and self.position[1]+1==pawn_in_movement[0][1]):
 					moves+=[(self.position[0]+direction,self.position[1]+1)]
-			
-
 
 		return moves
 	
@@ -81,6 +79,20 @@ class Knight(ChessPiece):
 	def __init__(self,position,is_white):
 		image_file_name="images/white_knight.svg" if is_white else "images/black_knight.svg"
 		super().__init__(image_file_name,position,is_white,3)
+
+	def possible_moves(self, piece_map):
+		moves=[]
+
+		displacements=[(2,1),(2,-1),(1,2),(1,-2),(-2,1),(-2,-1),(-1,2),(-1,-2)]
+
+		for displacement in displacements:
+			new_position=(self.position[0]+displacement[0],self.position[1]+displacement[1])
+			if new_position[0] >= 0 and new_position[1]>=0 and new_position[0]<=7 and new_position[1]<=7:
+				if (1-2*self.is_white)*piece_map[new_position[0]][new_position[1]]>=0:
+					moves.append(new_position)
+
+		return moves
+
 
 class Rook(ChessPiece):
 	def __init__(self,position,is_white):
