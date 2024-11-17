@@ -9,7 +9,7 @@ class ChessGame:
 		self.check=False
 
 		#variable to keep track of available en pasaunts since can only be one availabel at a time we dont need to record whos it was
-		self.pawn_in_movement=None
+		self.pawn_in_movement=[(None,None),(None,None)]
 
 		#a 2d array of the piece at each square in the board
 		self.piece_map=[
@@ -67,16 +67,24 @@ class ChessGame:
 
 	#return a list of possible moves for the piece at a give square including itslef
 	def get_possible_moves(self,square,white_to_move):
+
 		if self.check:
 			return []
 		if white_to_move:
 			for piece in self.white_pieces:
 				if np.all(piece.position == square):
-					return [square]+piece.possible_moves(self.piece_map)
+					if piece.piece_type==1:
+						return [square]+piece.possible_moves(self.piece_map,self.pawn_in_movement)
+					else:
+						return [square]+piece.possible_moves(self.piece_map)
+
 		else:
 			for piece in self.black_pieces:
 				if np.all(piece.position == square):
-					return [square]+piece.possible_moves(self.piece_map)
+					if piece.piece_type==1:
+						return [square]+piece.possible_moves(self.piece_map,self.pawn_in_movement)
+					else:
+						return [square]+piece.possible_moves(self.piece_map)
 		return []
 	
 	#move the piece at the start position if it exists to the end position
@@ -97,13 +105,36 @@ class ChessGame:
 		self.piece_map[end_position[0]][end_position[1]]=self.piece_map[start_position[0]][start_position[1]]
 		self.piece_map[start_position[0]][start_position[1]]=0
 
+		piece_type=0
+
 		#move the piece
 		if white_to_move:
 			for piece in self.white_pieces:
 				if np.all(piece.position == start_position):
 					piece.move_to(end_position)
+					piece_type=piece.piece_type
 		else:
 			for piece in self.black_pieces:
 				if np.all(piece.position == start_position):
 					piece.move_to(end_position)
-		
+					piece_type=piece.piece_type
+
+		#remove pawn if enpausaunted
+		if piece_type==1:
+			if np.all(end_position==self.pawn_in_movement[0]):
+				print("Enpausant")
+				self.piece_map[self.pawn_in_movement[1][0]][self.pawn_in_movement[1][1]]=0
+				if white_to_move:
+					for piece in self.black_pieces:
+						if np.all(piece.position == self.pawn_in_movement[1]):
+							self.black_pieces.remove(piece)
+				else:
+					for piece in self.white_pieces:
+						if np.all(piece.position == self.pawn_in_movement[1]):
+							self.white_pieces.remove(piece)
+
+		#remeber if a pawn moved two squares
+		self.pawn_in_movement=[(None,None),(None,None)]
+		if piece_type==1:
+			if abs(end_position[0]-start_position[0])==2:
+				self.pawn_in_movement=[(start_position[0]+1-2*white_to_move,start_position[1]),end_position]
